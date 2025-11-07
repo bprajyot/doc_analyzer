@@ -213,7 +213,11 @@ marimo/_lsp/
 __marimo__/
 
 # Streamlit
+<<<<<<< HEAD
 .streamlit/secrets.toml
 
 #OTHER
 service_account_key.json
+=======
+.streamlit/secrets.toml
+>>>>>>> a24b19936636d19944dc51509db4b576dc5a0e47
