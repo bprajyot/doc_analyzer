@@ -1,27 +1,75 @@
-from config import supabase
+from server.config import supabase
 import os
-# Upload a file to Supabase Storage and return its public URL
-def upload_document(file_stream, file_name: str, address: str = "documents/actual"):
+
+# Upload details of document to the storage
+def save_to_storage(file_stream, file_name: str):
     try:
-        # Upload file (overwrite if it already exists)
-        supabase.storage.from_(address).upload(file_name, file_stream, {"upsert": True})
-        
-        doc_url = supabase.storage.from_(address).get_public_url(file_name)
-        return doc_url
-    
+        # Ensure we have bytes
+        if hasattr(file_stream, "read"):
+            file_bytes = file_stream.read()
+        else:
+            file_bytes = file_stream
+
+        file_path = f"actual/{file_name}"
+        print("Uploading to Supabase Storage:", file_path)
+
+        # Try uploading — if the file exists, delete first to emulate upsert
+        try:
+            # Attempt upload
+            response = supabase.storage.from_("documents").upload(
+                file_path,
+                file_bytes,
+                file_options={"content-type": "application/pdf"}
+            )
+        except Exception as e:
+            # If file already exists, delete it and retry
+            if "already exists" in str(e).lower():
+                print("File exists, deleting and re-uploading...")
+                supabase.storage.from_("documents").remove([file_path])
+                response = supabase.storage.from_("documents").upload(
+                    file_path,
+                    file_bytes,
+                    file_options={"content-type": "application/pdf"}
+                )
+            else:
+                raise e
+
+        print("Storage upload response:", response)
+
+        # Generate a public URL
+        public_url = supabase.storage.from_("documents").get_public_url(file_path)
+        print("Public URL:", public_url)
+
+        return public_url
+
     except Exception as e:
-        return {"error": str(e)}
+        print("Storage upload failed:", str(e))
+        return f"ERROR: {str(e)}"
+
+
 
 # pass the address as documents/actual or documents/summarized
-def get_url(file_name: str, address: str):
+
+
+def get_url(file_name: str, address: str) -> str:
     try:
-        path = f"{address}/{file_name}"
-        url = supabase.storage.from_(address).get_public_url(path)
+        response = supabase.storage.from_(address).get_public_url(file_name)
+        if isinstance(response, dict):
+            public_url = response.get("data", {}).get("publicUrl")
+        else:
+            public_url = str(response)
+        if not public_url:
+            raise Exception("No public URL returned.")
+
+        return public_url
+
     except Exception as e:
-        return {"error": str(e)}
-    
+        print(f"[get_url ERROR] {e}")
+        return f"ERROR: {str(e)}"
+
+
 # pass the address as documents/actual or documents/summarized
-def download_document(file_name: str, address: str, download_path: str="./downlaods"):
+def download_document(file_name: str, address: str, download_path: str = "./downlaods"):
     try:
         parts = address.split("/", 1)
         if len(parts) != 2:
@@ -39,7 +87,8 @@ def download_document(file_name: str, address: str, download_path: str="./downla
 
         local_file_path = os.path.join(download_path, file_name)
 
-        file_bytes = response if isinstance(response, (bytes, bytearray)) else response.read()
+        file_bytes = response if isinstance(
+            response, (bytes, bytearray)) else response.read()
         with open(local_file_path, "wb") as f:
             f.write(file_bytes)
 
