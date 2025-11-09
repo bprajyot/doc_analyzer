@@ -7,10 +7,10 @@ def create_app():
 
     # Register Blueprints
     from server.routes.documents import documents
-    # from routes.risks import risks
+    from server.routes.risks import risks
 
     app.register_blueprint(documents, url_prifix='/documents')
-    # app.register_blueprint(risks, url_prifix='/risks')
+    app.register_blueprint(risks, url_prifix='/risks')
 
     return app
 
