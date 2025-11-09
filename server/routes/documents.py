@@ -68,7 +68,6 @@ def upload_documents():
         "data": data
     }), 200
 
-
 @documents.route('/documents/list', methods=["GET"])
 def get_documents():
     docs = get_all_docs()
