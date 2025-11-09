@@ -46,11 +46,7 @@ def save_to_storage(file_stream, file_name: str):
         print("Storage upload failed:", str(e))
         return f"ERROR: {str(e)}"
 
-
-
 # pass the address as documents/actual or documents/summarized
-
-
 def get_url(file_name: str, address: str) -> str:
     try:
         response = supabase.storage.from_(address).get_public_url(file_name)
@@ -66,7 +62,6 @@ def get_url(file_name: str, address: str) -> str:
     except Exception as e:
         print(f"[get_url ERROR] {e}")
         return f"ERROR: {str(e)}"
-
 
 # pass the address as documents/actual or documents/summarized
 def download_document(file_name: str, address: str, download_path: str = "./downlaods"):
