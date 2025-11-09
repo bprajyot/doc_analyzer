@@ -1,50 +1,46 @@
 import re
+import json
 from datetime import datetime
 from server.agents.base import create_agent
+from langchain_core.output_parsers import StrOutputParser
 from server.utils.document_parser import parse_pdf
 
-def clean_risk_output(raw_text: str) -> str:
+
+def clean_markdown(text: str) -> str:
     """
-    Clean and reformat the AI's output for readability and database storage.
-    Removes markdown artifacts (**bold**, extra newlines) and normalizes spacing.
+    Remove markdown-style formatting (bold, italics, etc.) from text.
     """
-    # Remove markdown bold (**text**) or other formatting
-    cleaned = re.sub(r"\*\*(.*?)\*\*", r"\1", raw_text)
-
-    # Normalize bullet points
-    cleaned = re.sub(r"[\*\•]\s*", "- ", cleaned)
-
-    # Remove excessive newlines and whitespace
-    cleaned = re.sub(r"\n{2,}", "\n", cleaned).strip()
-
-    # Ensure "Risk Percentage" appears on a new line at the end
-    cleaned = re.sub(r"(Risk Percentage:\s*\d+%?)", r"\n\1", cleaned)
-
-    # Add a timestamp footer if desired
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cleaned += f"\n\n[Analyzed at: {timestamp}]"
-
+    if not text:
+        return ""
+    # Remove **bold**, *italic*, __underline__, etc.
+    cleaned = re.sub(r"(\*\*|\*|__|_)", "", text)
+    # Optionally, strip extra spaces and newlines
+    cleaned = re.sub(r"\s+\n", "\n", cleaned).strip()
     return cleaned
 
 
 def risk_analyzer():
+    """
+    Creates a legal risk analysis agent function that analyzes document text
+    and returns potential risks with a risk percentage.
+    """
     system_prompt = (
-        "You are a legal risk analysis assistant. "
-        "Your task is to carefully read the given document or clause and identify any content "
-        "that may pose potential legal, ethical, or data privacy risks. "
-        "If risks exist, return a bullet-point list summarizing each risk clearly. "
-        "If no risks are found, respond with 'No issues found.' "
-        "Also estimate an overall risk percentage (0–100%) based on severity."
+        "You are a legal risk analysis assistant. Your goal is to identify any potential legal, ethical, or data privacy risks "
+        "in the provided document or clause. Return your answer directly — do not include introductions like 'Here’s an analysis...' or 'Below is a summary...'. Only output the findings themselves, as clear bullet points, followed by a final line in the format 'Risk Percentage: <number>%'. If no risks are found, simply respond with 'No issues found.'"
     )
 
     agent = create_agent("risk_analyzer", system_prompt)
+    parser = StrOutputParser()
 
     def analyze(document_text: str):
+        """
+        Runs the risk analysis on the provided document text.
+        """
         prompt = (
-            f"Analyze the following document for risks:\n\n{document_text}\n\n"
-            "Respond with bullet points and a final 'Risk Percentage' value."
+            f"Analyze the following document for risks:\n\n{document_text}\n\n Respond only with the bullet-point list of risks and a final 'Risk Percentage' line. Do NOT include introductions, explanations, or summaries before the list."
         )
-        result = agent(prompt)
-        return clean_risk_output(result)
+        result = agent.invoke(prompt) if hasattr(agent, "invoke") else agent(prompt)
+        parsed = parser.parse(result) if hasattr(parser, "parse") else parser(result)
+        return clean_markdown(parsed)
 
     return analyze

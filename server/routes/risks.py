@@ -29,7 +29,6 @@ def get_risks():
                     "description": doc["risks"]
                 }
             )
-
     return jsonify(risky_docs), 200
 
 # return a risky document's details of mentioned id
