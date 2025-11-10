@@ -68,12 +68,12 @@ def upload_documents():
         "data": data
     }), 200
 
-@documents.route('/documents/list', methods=["GET"])
+@documents.route('/documents/report/list', methods=["GET"])
 def get_documents():
     docs = get_all_docs()
     return jsonify(docs), 200
 
-@documents.route('/documents/<document_id>', methods=["GET"])
+@documents.route('/documents/report/<string:document_id>', methods=["GET"])
 def get_document(document_id):
     doc = get_doc_by_id(document_id)
     if not doc:
