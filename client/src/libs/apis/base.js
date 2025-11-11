@@ -1,4 +1,4 @@
-const base = process.env.API_URL || 'http://127.0.0.1:5000'
+const base = 'http://127.0.0.1:5000'
 
 export async function apiFetch(endpoint, option={}){
     const url = `${base}${endpoint}`
