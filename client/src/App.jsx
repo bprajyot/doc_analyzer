@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import viteLogo from '/vite.svg'
+import { Routes, Route } from "react-router-dom";
 import './App.css'
-import Navbar from './components/navbar'
+import Dashboard from './pages/dashboard/Dashboard'
+import Navbar from './components/Navbar'
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className='dark:bg-gray-800 min-h-screen'>
-      <Navbar/>
-    </div>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+    </Routes>
   )
 }
 
