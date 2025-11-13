@@ -94,7 +94,7 @@ function Dashboard() {
                         </svg>
                         <span>{doc.filename}</span>
                       </span>
-                      <Link to={`/document_summary/${doc.id}`} className="text-xs text-blue-400 underline italic  py-1 rounded-md">
+                      <Link to={`/documents/${doc.id}`} className="text-xs text-blue-400 underline italic  py-1 rounded-md">
                         <p>get details...</p>
                       </Link>
                     </li>
