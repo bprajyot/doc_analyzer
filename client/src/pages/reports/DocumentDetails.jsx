@@ -62,7 +62,7 @@ function DocumentDetails() {
             <div className="pt-25 flex flex-col items-center p-10">
                 {/* Header */}
                 <div className="flex justify-between items-start mb-6 w-full max-w-5xl">
-                    <h1 className="text-3xl font-semibold break-words pr-4">{doc.filename}</h1>
+                    <h1 className="text-3xl font-semibold wrap-break-word pr-4">{doc.filename}</h1>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
@@ -199,7 +199,7 @@ function DocumentDetails() {
                                                 <dt className="text-sm font-semibold text-white truncate">
                                                     {key}
                                                 </dt>
-                                                <dd className="col-span-2 text-sm text-white break-words">
+                                                <dd className="col-span-2 text-sm text-white wrap-break-word">
                                                     : {Array.isArray(value)
                                                         ? value.join(', ')
                                                         : value === null
@@ -214,7 +214,7 @@ function DocumentDetails() {
                         </div>
 
                         {/* Back Link */}
-                        <div className="mb-6 border border-gray-500 border-2 shadow-gray-500/50 shadow-md w-fit px-3 py-1 rounded-lg max-w-5xl">
+                        <div className="mb-6 border-gray-500 border-2 shadow-gray-500/50 shadow-md w-fit px-3 py-1 rounded-lg max-w-5xl">
                             <Link
                                 to="/documents"
                                 className="text-white text-sm hover: text-md flex items-center"
