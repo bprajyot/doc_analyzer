@@ -16,7 +16,6 @@ function Documents() {
             try {
                 const [docsData, riskyData] = await Promise.all([
                     documentApi.getAllDocs(),
-                    riskApi.getAllRiskyDocs(),
                 ]);
 
                 setDocs(docsData);
@@ -60,7 +59,8 @@ function Documents() {
                                         key={doc.id}
                                         className="border border-gray-600 shadow-xl rounded-lg p-3 text-justify space-x-2"
                                     >
-                                        <div className='flex justify-start items-center space-x-2 text-lg'>
+                                        <div className='flex justify-between'>
+                                            <div className='flex justify-start items-center space-x-2 text-lg'>
                                             <svg
                                                 className="w-5 h-5 text-gray-800 dark:text-white"
                                                 aria-hidden="true"
@@ -78,12 +78,14 @@ function Documents() {
                                             </svg>
                                             <span>{doc.filename}</span>
                                         </div>
-                                        <div className='mt-2'>
+                                        <Link to={`/documents/${doc.id}`}className='mt-1 italic text-blue-500 text-sm'>
+                                            read more...
+                                        </Link>
+                                        </div>
+                                        <div className='mt-2 mb-1 text-sm'>
                                             {doc.summary}
                                         </div>
-                                        <Link to={`/documents/${doc.id}`}className='mt-1 italic text-blue-500 text-sm'>
-                                            read more..
-                                        </Link>
+                                        
                                     </li>
                                 ))}
                             </ul>

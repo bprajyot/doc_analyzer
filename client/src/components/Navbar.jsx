@@ -45,14 +45,6 @@ function Navbar() {
                                 Documents
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                to="/risk_reports"
-                                className="block py-2 px-3 text-white hover:font-medium "
-                            >
-                                Risk Reports
-                            </Link>
-                        </li>
                     </ul>
                 </div>
 

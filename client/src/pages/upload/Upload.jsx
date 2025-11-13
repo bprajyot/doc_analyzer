@@ -41,7 +41,7 @@ export default function Upload() {
 
     try {
       const result = await documentApi.uploadDoc(file);
-      navigate(`/documents/${result.data.id || ""}`);
+      navigate('/documents');
     } catch (e) {
       console.error(e);
       setError(e.message || "Error occurred during file upload; try again");
