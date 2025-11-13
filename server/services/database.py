@@ -40,13 +40,21 @@ def get_all_docs(supabase = supabase):
     except Exception as e:
         return {"error": str(e)}
     
-def get_doc_by_id(doc_id: str, supabase = supabase):
+def get_doc_by_id(doc_id: str, supabase=supabase):
     try:
-        response = supabase.table("documents_details").select("*").eq("id", doc_id).single().execute()
+        # Don't use .single(); just get the list of results
+        response = supabase.table("documents_details").select("*").eq("id", doc_id).execute()
 
         if hasattr(response, "error") and response.error:
             raise Exception(response.error.message)
-        return response.data if response.data else {"message": "Document not found"}
+
+        data = response.data
+        if not data:
+            return None  # No document found
+
+        # Return the first document
+        return data[0]
 
     except Exception as e:
-        return {"error": str(e)}
+        print(f"Error fetching document {doc_id}: {e}")
+        return None
