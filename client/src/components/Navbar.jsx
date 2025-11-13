@@ -31,38 +31,41 @@ function Navbar() {
                         </li>
                         <li>
                             <Link
-                                to="/about"
+                                to="/upload"
                                 className="block py-2 px-3 text-white hover:font-medium "
                             >
-                                About
+                                Upload
                             </Link>
                         </li>
                         <li>
                             <Link
-                                to="/services"
+                                to="/documents"
                                 className="block py-2 px-3 text-white hover:font-medium "
                             >
-                                Services
+                                Documents
                             </Link>
                         </li>
                         <li>
                             <Link
-                                to="/contact"
+                                to="/risk_reports"
                                 className="block py-2 px-3 text-white hover:font-medium "
                             >
-                                Contact
+                                Risk Reports
                             </Link>
                         </li>
                     </ul>
                 </div>
 
                 <div className="flex space-x-3">
-                    <button
+                    <Link to='/upload'>
+                        <button
                         type="button"
                         className="cursor-pointer text-white dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 rounded-xl text-sm px-4 py-2"
                     >
                         Get started
                     </button>
+                    </Link>
+
 
                 </div>
             </div>
